@@ -1,8 +1,17 @@
 {
-    "name": "ShilaCasteels_Opdracht5",
-    "version": "1.0.0",
-    "keywords": ["util", "functional", "server", "client", "browser"],
-    "author": "ShilaCasteels",
-    "contributors": [],
-    "dependencies": {}
+  "name": "ShilaCasteels_Opdracht5",
+  "version": "1.0.0",
+  "keywords": [
+    "util",
+    "functional",
+    "server",
+    "client",
+    "browser"
+  ],
+  "author": "ShilaCasteels",
+  "contributors": [],
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  }
 }
