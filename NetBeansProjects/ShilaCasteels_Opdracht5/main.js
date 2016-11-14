@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 // a GET on /locatie
 app.get("/locatie", function(request, response) {
     // response with all available locations 
-    response.send(dal.allelocaties());
+    response.send(dal.AllLocaties());
 });
 
 // a GET on /locatie/:id
@@ -39,7 +39,7 @@ app.post("/locatie", function(request, response) {
     var locatie = request.body;
 
     // fill in the mandatory field(s)
-    var errors = validation.fieldsNotEmpty(locatie, "locatie_id", "pauze_id", "pauze_tijd", "klas", "aantal_studenten_in_klas");
+    var errors = validation.fieldsNotEmpty(locatie, "id", "pauze_id", "pauze_tijd", "klas", "aantal_studenten_in_klas");
     if (errors) {
         response.status(400).send({
             message: "Following pauze_id does not excist, please create one in resource pauze" + errors.concat()
@@ -48,47 +48,84 @@ app.post("/locatie", function(request, response) {
     }
 
     // id must be unique
-    var existingLocatie = dal.findlocatie(device.mac_address_device);
-    if (existingDevice) {
+    var existingLocatie = dal.findlocatie(locatie.id);
+    if (existingLocatie) {
         response.status(409).send({
             message: "id must be unique, it's already registered",
-            link: "../devices/" + existingDevice.id
+            link: "../locatie/" + existingLocatie.id
         });
         return;
     }
 
-    // every device has his own unique id
-    device.id = uuid.v4();
-    // device is stored in the data store 'dal'
-    dal.saveDevice(device);
+
+    // locatie is stored in the data store 'dal'
+    dal.saveLocatie(locatie);
     // overwrite the default httpstatus (200) 
-    response.status(201).location("../devices/" + device.id).send();
+    response.status(201).location("../locatie/" + locatie.id).send();
 });
 
 
-// a GET on /alarms
-app.get("/alarms", function(request, response) {
-    // response with all available devices 
-    response.send(dal.AllAlarms());
+// a GET on /pauze
+app.get("/pauze", function(request, response) {
+    // response with all available pauzes
+    response.send(dal.AllPauze());
 });
 
-// a GET on /alarms/:id
-app.get("/alarms/:id", function(request, response) {
-    var device = dal.findAlarm(request.params.id);
-    if (device) {
-        response.send(device);
+// a GET on /pauze/:id
+app.get("/pauze/:id", function(request, response) {
+    var pauze = dal.findPauze(request.params.id);
+    if (pauze) {
+        response.send(pauze);
     } else {
         response.status(404).send();
     }
 });
 
-// a POST on /alarms
-app.post("/alarms", function(request, response) {
+// a POST on /pauze
+app.post("/pauze", function(request, response) {
     // only data that matches with the variable 
-    var alarm = request.body;
+    var pauze = request.body;
 
     // fill in the mandatory field(s)
-    var errors = validation.fieldsNotEmpty(alarm, "name_drone", "location", "type_alarm", "time_alarm", "notification", "important_alarm");
+    var errors = validation.fieldsNotEmpty(pauze, "pauze_tijd");
+    if (errors) {
+        response.status(400).send({
+            message: "Following pauze_tijd already exists"
+        });
+        return;
+    }
+
+    // every pauze has his own unique id
+    pauze.id = uuid.v4();
+    // pauze is stored in the data store 'dal'
+    dal.savePauze(pauze);
+    // overwrite the default httpstatus (200) 
+    response.status(201).location("../pauze/" + pauze.id).send();
+});
+
+// a GET on /kassa
+app.get("/kassa", function(request, response) {
+    // response with all available kassa
+    response.send(dal.AllKassa());
+});
+
+// a GET on /kassa/:id
+app.get("/kassa/:id", function(request, response) {
+    var kassa = dal.findKassa(request.params.id);
+    if (kassa) {
+        response.send(kassa);
+    } else {
+        response.status(404).send();
+    }
+});
+
+// a POST on /kassa
+app.post("/kassa", function(request, response) {
+    // only data that matches with the variable 
+    var kassa = request.body;
+
+    // fill in the mandatory field(s)
+    var errors = validation.fieldsNotEmpty(kassa, "kassa_id", "lodatie");
     if (errors) {
         response.status(400).send({
             message: "Following field(s) are mandatory:" + errors.concat()
@@ -96,52 +133,32 @@ app.post("/alarms", function(request, response) {
         return;
     }
 
-    // every device has his own unique id
-    alarm.id = uuid.v4();
-    // device is stored in the data store 'dal'
-    dal.saveAlarm(alarm);
+    // every kassa has his own unique id
+    kassa.id = uuid.v4();
+    // kassa is stored in the data store 'dal'
+    dal.saveKassa(kassa);
     // overwrite the default httpstatus (200) 
-    response.status(201).location("../alarms/" + alarm.id).send();
+    response.status(201).location("../kassa/" + kassa.id).send();
 });
 
-// a GET on /whitelists
-app.get("/whitelists", function(request, response) {
-    // response with all available devices 
-    response.send(dal.AllWhitelists());
-});
-
-// a GET on /whitelists/:id
-app.get("/whitelists/:id", function(request, response) {
-    var whitelist = dal.findWhitelist(request.params.id);
-    if (whitelist) {
-        response.send(whitelist);
+// a GET on /kassa_rapport/:id
+app.get("/kassa_rapport/:id", function(request, response) {
+    var kassa_rapport = dal.findKassaRapport(request.params.id);
+    if (kassa_rapport) {
+        response.send(kassa_rapport);
     } else {
         response.status(404).send();
     }
 });
-
-// a POST on /whitelists
-app.post("/whitelists", function(request, response) {
-    // only data that matches with the variable 
-    var whitelist = request.body;
-
-    // fill in the mandatory field(s)
-    var errors = validation.fieldsNotEmpty(whitelist, "function", "mac_address_device", "type_device");
-    if (errors) {
-        response.status(400).send({
-            message: "Following field(s) are mandatory:" + errors.concat()
-        });
-        return;
+// a GET on /verkoop/:id
+app.get("/verkoop/:id", function(request, response) {
+    var verkoop = dal.findVerkoop(request.params.id);
+    if (verkoop) {
+        response.send(verkoop);
+    } else {
+        response.status(404).send();
     }
-
-    // every device has his own unique id
-    whitelist.id = uuid.v4();
-    // device is stored in the data store 'dal'
-    dal.saveWhitelist(whitelist);
-    // overwrite the default httpstatus (200) 
-    response.status(201).location("../whitelists/" + whitelist.id).send();
 });
-
 // the server starts on localhost:456789
 app.listen(456789);
 
