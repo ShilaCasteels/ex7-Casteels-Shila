@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Data Distribution</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type ="text/Javascript" src="https://ajax.microsoft.com/ajax/jQuery/jquery-3.1.1.min.js" ></script>
+            <script>
+    $.ajax({
+        url: 'my_name.json',
+        type: 'GET',
+        timeout: 12000,
+        dataType: 'text'
+    }).done(function(responseText){
+        $('#answer').text(responseText);
+        console.log(responseText);
+    }).fail(function(){alert('An error has occured - you may not have been entered')
+    });
+    </script>
+    </head>
+    <body>
+        <div>XML Http Request</div>
+        <div id="answer"></div>
+    </body>
+    </html>

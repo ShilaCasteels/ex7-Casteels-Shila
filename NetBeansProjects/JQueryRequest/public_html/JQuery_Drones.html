@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Data Distribution</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    table, th, td {border: 1px solid black;}
+    th {text-align: left;}
+    </style>
+    </head>
+    <body>
+    <div> Data Distribution</div>
+     <table style="width:100%" >
+  <tr>
+      <th>Drone:naam</th>
+      <td>Drone:mac-adress</td>
+      <td>File:id</td>
+      <td>File:first record</td>
+      <td>File:last record</td>
+  </tr>
+  <tr>
+      <td id ="drone_id"></td>
+      <td id="drone_mac"></td>
+      <td id="file_id"></td>
+      <td id="firstRecord"></td>
+      <td id="lastRecord"></td>
+  </tr>
+</table>
+        <script type ="text/Javascript" src="https://ajax.microsoft.com/ajax/jQuery/jquery-3.1.1.min.js" ></script>
+            <script>
+    var settings = {
+  "url": "https://web-ims.thomasmore.be/datadistribution/API/2.0/drones/34336ea2867c4ac8b739d2c201dd8353?format=json",
+  "method": "GET",
+  "headers": {
+    "authorization": "Basic aW1zOno1MTJtVDRKeVgwUExXZw=="
+  }
+};
+
+    $.ajax(settings).done(function (drone) {
+         for(var i=0;i<drone.length;i++){
+              $("#drone_id").append("<tr><td>" +drone[i].id+"</></>");
+              $("#drone_mac").append("<tr><td>"+ drone[i].url + "</></>");
+          }
+    // }).fail(function(){
+    //    alert('No connection possible');
+    });
+    var settings = {
+       "url": "https://web-ims.thomasmore.be/datadistribution/API/2.0/files/0f17e127578a44b6b363d0d36ff6ba18",
+     "method": "GET",
+    "headers": {
+     "authorization": "Basic aW1zOno1MTJtVDRKeVgwUExXZw=="
+        }
+      };
+    $.ajax(settings).done(function (file) {
+         for(var i=0;i<file.length;i++){
+              $("#file_id").append("<tr><td>" +file[i].id+"</></>");
+              $("#firstRecord").append("<tr><td>"+ file[i].date_first_record + "</></>");
+              $("#lastRecord").append("<tr><td>"+ file[i].date_last_record + "</></>"); 
+         }
+   // }).fail(function(){
+   // alert('No connection possible');
+   });
+    </script>
+    </body>
+    </html>
